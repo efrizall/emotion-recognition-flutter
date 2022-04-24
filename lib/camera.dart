@@ -1,4 +1,4 @@
-
+import 'package:tflite/tflite.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +20,7 @@ class _CameraState extends State<Camera> {
   void initState(){
     super.initState();
     loadCamera();
+    loadModel();
   }
   
 
@@ -33,10 +34,38 @@ class _CameraState extends State<Camera> {
         setState(() {
           cameraController.startImageStream((imageStream){
             cameraImage = imageStream;
+            runModel();
           });
         });
       }
     });
+  }
+
+  runModel() async{
+    if(cameraImage!=null){
+      var predictions = await Tflite.runModelOnFrame(bytesList: cameraImage.planes.map((plane){
+        return plane.bytes;
+      }).toList(),
+      imageHeight: cameraImage.height,
+      imageWidth: cameraImage.width,
+      imageMean: 127.5,
+      imageStd: 127.5,
+      rotation: 90,
+      numResults: 2,
+      threshold: 0.1,
+      asynch: true);
+
+      predictions.forEach((element) {
+        setState(() {
+          output = element['label'];
+        });
+      });
+    }
+  }
+
+  loadModel() async{
+    await Tflite.loadModel(model: "assets/model.tflite",
+    labels: "assets/label.txt");
   }
 
 
@@ -54,6 +83,12 @@ class _CameraState extends State<Camera> {
             Container():
             AspectRatio(aspectRatio: cameraController.value.aspectRatio,
             child: CameraPreview(cameraController),),
+          ),
+          ),
+          Text(output,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20
           ),)
         ],
       )
