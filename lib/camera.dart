@@ -26,7 +26,7 @@ class _CameraState extends State<Camera> {
 
   // Funct access camera
   loadCamera(){
-    cameraController = CameraController(cameras[0], ResolutionPreset.medium);
+    cameraController = CameraController(cameras[1], ResolutionPreset.medium);
     cameraController.initialize().then((value){
       if(!mounted){
         return;
@@ -76,7 +76,7 @@ class _CameraState extends State<Camera> {
         children: [
           Padding(padding: EdgeInsets.all(20),
           child: Container(
-            height: MediaQuery.of(context).size.height*0.5,
+            height: MediaQuery.of(context).size.height*0.6,
             width: MediaQuery.of(context).size.width,
             child: !cameraController.value.isInitialized?
             Container():
