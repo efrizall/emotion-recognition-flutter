@@ -64,8 +64,7 @@ class _CameraState extends State<Camera> {
   }
 
   loadModel() async{
-    await Tflite.loadModel(model: "assets/model.tflite",
-    labels: "assets/label.txt");
+    await Tflite.loadModel(model: "assets/model.tflite",labels: "assets/labels.txt");
   }
 
 
@@ -77,7 +76,7 @@ class _CameraState extends State<Camera> {
         children: [
           Padding(padding: EdgeInsets.all(20),
           child: Container(
-            height: MediaQuery.of(context).size.height*0.7,
+            height: MediaQuery.of(context).size.height*0.5,
             width: MediaQuery.of(context).size.width,
             child: !cameraController.value.isInitialized?
             Container():
